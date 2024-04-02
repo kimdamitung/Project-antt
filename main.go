@@ -6,25 +6,11 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strings"
 )
 
 const (
 	PORT = ":8081"
 )
-
-func sayhelloName(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	fmt.Println(r.Form)
-	fmt.Println("path", r.URL.Path)
-	fmt.Println("scheme", r.URL.Scheme)
-	fmt.Println(r.Form["url_long"])
-	for k, v := range r.Form {
-		fmt.Println("key: ", k)
-		fmt.Println("val: ", strings.Join(v, ""))
-	}
-	fmt.Fprintf(w, "Hello Duy Tung (^-^)")
-}
 
 func hashPassword(password string) string {
 	h := sha1.New()
@@ -54,7 +40,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func signup(w http.ResponseWriter, r *http.Request) {
-
+	fmt.Println("method: ", r.Method)
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("src/signup.html")
+		t.Execute(w, nil)
+	} else {
+		r.ParseForm()
+	}
 }
 
 func main() {
@@ -62,6 +54,7 @@ func main() {
 	log.Println("=====================SUCCESS=====================")
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("src/img"))))
 	http.HandleFunc("/", login)
+	http.HandleFunc("/signup", signup)
 	err := http.ListenAndServe(PORT, nil)
 	if err != nil {
 		log.Fatalf("Error starting server %s", err)
