@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" type="image/svg+xml" href="img/docker.svg" >
+	<title>Golang Sign Up</title>
+
+</head>
+<body>
+	<style type="text/css">
+		body{
+			background-image: url("img/background.jpg");
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			font-family: sans-serif;
+		}
+
+		.container {
+		    width: 100%;
+		    height: 100vh;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		}
+
+		.signup-form {
+			width: 400px;
+		    margin-top: 20px;
+		    padding: 20px;
+		    border-radius: 10px;
+		    background-color: #f7f7f7;
+		}
+
+		.signup-form h2 {
+		    text-align: center;
+		    margin-bottom: 20px;
+		    text-transform: capitalize;
+		}
+
+		.signup-form form {
+		    display: flex;
+		    flex-direction: column;
+		}
+
+		.signup-form label {
+		    margin-bottom: 5px;
+		}
+
+		.signup-form input {
+		    padding: 10px;
+		    border: 1px solid #ccc;
+		    border-radius: 5px;
+		    margin-bottom: 10px;
+		}
+
+		.signup-form button {
+		    padding: 10px 20px;
+		    background-color: #000;
+		    color: #fff;
+		    border: none;
+		    border-radius: 5px;
+		    cursor: pointer;
+		}
+
+		.signup-form a{
+			text-decoration: none;
+		    color: #000;
+		    margin-bottom: 10px;
+		}
+	</style>
+	
+	<div class="container">
+		<div class="signup-form">
+		    <h2>
+		    	sign up
+		    </h2>
+		    <form action="/signup" method="post">
+		        <label for="name">Name: </label>
+		        <input type="text" id="name" name="name" placeholder="Name">
+		        <label for="mssv">MSSV</label>
+		        <input type="number" id="mssv" name="mssv" placeholder="MSSV">
+		        <label for="username">Username: </label>
+		        <input type="text" id="username" name="username" placeholder="Username">
+		        <label for="password">Password:</label>
+		        <input type="password" id="password" name="password" placeholder="Password">
+		        <label for="confirm-password">Confirm Password:</label>
+		        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password">
+		        <button type="submit">Sign Up</button>
+		    </form>
+		    <p>Already have an account? <a href="#">Log In</a></p>
+		</div>
+	</div>
+</body>
+</html>

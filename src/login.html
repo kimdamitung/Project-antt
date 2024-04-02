@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" type="image/svg+xml" href="img/docker.svg" >
-	<title>Golang Login</title>
+	<title>Golang Log In</title>
 
 </head>
 <body>
@@ -15,18 +15,6 @@
 			background-repeat: no-repeat;
 			background-attachment: fixed;
 			font-family: sans-serif;
-		}
-
-		#login-code{
-			width: 300px;
-		    height: 600px;
-		    position: fixed;
-		    top: 50%;
-		    left: 50%;
-		    transform: translate(-50%, -50%);
-		    background-color: rgba(255, 255, 255, 0.8);
-		    padding: 20px;
-		    border-radius: 10px;
 		}
 
 		* {
@@ -53,6 +41,7 @@
 		.login-form h2 {
 		    text-align: center;
 		    margin-bottom: 20px;
+		    text-transform: capitalize;
 		}
 
 		.login-form form {
@@ -103,9 +92,9 @@
 	<div class="container">
         <div class="login-form">
             <h2>
-            	Login
+            	log in
             </h2>
-            <form action="/" method="post" >
+            <form action="/" method="post">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" placeholder="Username">
                 <label for="password">Password:</label>

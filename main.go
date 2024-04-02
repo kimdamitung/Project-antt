@@ -36,7 +36,7 @@ func hashPassword(password string) string {
 func login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("method: ", r.Method)
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("src/index.html")
+		t, _ := template.ParseFiles("src/login.html")
 		t.Execute(w, nil)
 	} else {
 		r.ParseForm()
