@@ -111,6 +111,16 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		}
 		if rowsAffected > 0 {
 			fmt.Println("Insert successful")
+			temp, err_src := template.ParseFiles("src/success.html")
+			if err_src != nil {
+				log.Fatalf("Error parsing success template: %s", err_src)
+				return
+			}
+			err_src = temp.Execute(w, nil)
+			if err_src != nil {
+				log.Fatalf("Error executing success template: %s", err_src)
+				return
+			}
 		} else {
 			fmt.Println("Insert failed")
 		}
