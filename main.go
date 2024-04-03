@@ -40,6 +40,54 @@ func hashPassword(password string) string {
 	return hashedPassword
 }
 
+func homepage(w http.ResponseWriter, r *http.Request) {
+	// connect database
+	db, err := connectDatabase("database/database.db")
+	if err != nil {
+		log.Fatalf("Error connecting to database: %s", err)
+		return
+	}
+	defer db.Close()
+	// connect http
+	fmt.Println("method: ", r.Method)
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("src/index.html")
+		t.Execute(w, nil)
+	} else {
+		r.ParseForm()
+	}
+	// closer database
+	err = db.Close()
+	if err != nil {
+		log.Fatalf("Error closing database: %s", err)
+		return
+	}
+}
+
+func login_failed(w http.ResponseWriter, r *http.Request) {
+	// connect database
+	db, err := connectDatabase("database/database.db")
+	if err != nil {
+		log.Fatalf("Error connecting to database: %s", err)
+		return
+	}
+	defer db.Close()
+	// connect http
+	fmt.Println("method: ", r.Method)
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("src/failed.html")
+		t.Execute(w, nil)
+	} else {
+		r.ParseForm()
+	}
+	// closer database
+	err = db.Close()
+	if err != nil {
+		log.Fatalf("Error closing database: %s", err)
+		return
+	}
+}
+
 func login(w http.ResponseWriter, r *http.Request) {
 	// connect database
 	db, err := connectDatabase("database/database.db")
@@ -57,13 +105,23 @@ func login(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		username := r.Form.Get("username")
 		password := r.Form.Get("password")
-		fmt.Println("username: ", username)
-		fmt.Println("password: ", password)
 		hashedPassword := hashPassword(password)
-		if hashedPassword == "0f224bdbd25c5c3532037fed583e6240f600174f" {
-			fmt.Fprintf(w, "Hello %s, welcome to our website!", username)
+		fmt.Println("username      : ", username)
+		fmt.Println("password      :", password)
+		fmt.Println("hash password : ", hashedPassword)
+		// exam password and username
+		var dbPassword string
+		err_exam := db.QueryRow("SELECT password FROM info WHERE username = ?", username).Scan(&dbPassword)
+		if err_exam != nil {
+			http.Redirect(w, r, "/loginfailed", http.StatusSeeOther)
+			return
+		}
+		if hashedPassword == dbPassword {
+			http.Redirect(w, r, "/home", http.StatusSeeOther)
+			return
 		} else {
-			fmt.Fprintf(w, "Invalid username or password")
+			http.Redirect(w, r, "/loginfailed", http.StatusSeeOther)
+			return
 		}
 	}
 	// closer database
@@ -158,6 +216,8 @@ func main() {
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("src/img"))))
 	http.HandleFunc("/", login)
 	http.HandleFunc("/signup", signup)
+	http.HandleFunc("/home", homepage)
+	http.HandleFunc("/loginfailed", login_failed)
 	err := http.ListenAndServe(PORT, nil)
 	if err != nil {
 		log.Fatalf("Error starting server %s", err)
