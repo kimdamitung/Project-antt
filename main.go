@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -75,11 +76,12 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 func signup(w http.ResponseWriter, r *http.Request) {
 	// connect database
-	db, err := connectDatabase("database/database.db")
-	if err != nil {
-		log.Fatalf("Error connecting to database: %s", err)
+	db, errdb := connectDatabase("database/database.db")
+	if errdb != nil {
+		log.Fatalf("Error connecting to database: %s", errdb)
 		return
 	}
+	defer db.Close()
 	// connect http
 	fmt.Println("method: ", r.Method)
 	if r.Method == "GET" {
@@ -87,11 +89,36 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, nil)
 	} else {
 		r.ParseForm()
+		mssvStr := r.Form.Get("mssv")
+		mssv, err := strconv.Atoi(mssvStr)
+		if err != nil {
+			log.Fatalf("Error converting mssv to int: %s", err)
+			return
+		}
+		name := r.Form.Get("name")
+		username := r.Form.Get("username")
+		password := r.Form.Get("password")
+		hashedPassword := hashPassword(password)
+		result, err := db.Exec("INSERT INTO info (mssv, name, username, password) VALUES (?, ?, ?, ?)", mssv, name, username, hashedPassword)
+		if err != nil {
+			log.Fatalf("Error inserting into database: %s", err)
+			return
+		}
+		rowsAffected, err := result.RowsAffected()
+		if err != nil {
+			log.Fatalf("Error getting rows affected: %s", err)
+			return
+		}
+		if rowsAffected > 0 {
+			fmt.Println("Insert successful")
+		} else {
+			fmt.Println("Insert failed")
+		}
 	}
 	// closer database
-	err = db.Close()
-	if err != nil {
-		log.Fatalf("Error closing database: %s", err)
+	erclose := db.Close()
+	if erclose != nil {
+		log.Fatalf("Error closing database: %s", erclose)
 		return
 	}
 }
@@ -102,11 +129,7 @@ func main() {
 	checkErr(er)
 	defer db.Close()
 
-	_, er = db.Exec("INSERT INTO info (mssv, name, username, password) VALUES (?, ?, ?, ?)", 21085062, "Duy Tung", "duytung", "0f224bdbd25c5c3532037fed583e6240f600174f")
-	checkErr(er)
-
-	fmt.Println("Thêm dữ liệu thành công!")
-
+	// display database
 	rows, er := db.Query("SELECT * FROM info")
 	checkErr(er)
 	defer rows.Close()
