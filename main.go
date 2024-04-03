@@ -157,6 +157,11 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		username := r.Form.Get("username")
 		password := r.Form.Get("password")
 		hashedPassword := hashPassword(password)
+
+		/*begin code */
+
+		/*end code*/
+
 		result, err := db.Exec("INSERT INTO info (mssv, name, username, password) VALUES (?, ?, ?, ?)", mssv, name, username, hashedPassword)
 		if err != nil {
 			log.Fatalf("Error inserting into database: %s", err)
