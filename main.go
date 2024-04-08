@@ -15,6 +15,15 @@ const (
 	PORT = ":8081"
 )
 
+func add_salting(input string, transbits int) string {
+	temp := ""
+	for _, char := range input {
+		text := rune(int(char) - transbits)
+		temp += string(text)
+	}
+	return temp
+}
+
 func connectDatabase(dbPath string) (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
@@ -104,7 +113,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	} else {
 		r.ParseForm()
 		username := r.Form.Get("username")
-		password := r.Form.Get("password")
+		password := r.Form.Get("password") + add_salting(r.Form.Get("password"), 32)
 		hashedPassword := hashPassword(password)
 		fmt.Println("username      : ", username)
 		fmt.Println("password      :", password)
@@ -155,11 +164,14 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		}
 		name := r.Form.Get("name")
 		username := r.Form.Get("username")
-		password := r.Form.Get("password")
+		password := r.Form.Get("password") + add_salting(r.Form.Get("password"), 32)
+		confirm_password := r.Form.Get("confirm-password")
+		if confirm_password != password {
+			fmt.Println("Error password comfirm!!!!\n")
+		}
 		hashedPassword := hashPassword(password)
 
 		/*begin code */
-
 		/*end code*/
 
 		result, err := db.Exec("INSERT INTO info (mssv, name, username, password) VALUES (?, ?, ?, ?)", mssv, name, username, hashedPassword)
