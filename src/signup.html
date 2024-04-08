@@ -69,6 +69,17 @@
 		    color: #000;
 		    margin-bottom: 10px;
 		}
+
+	    input[type="number"]::-webkit-inner-spin-button,
+	    input[type="number"]::-webkit-outer-spin-button {
+	        -webkit-appearance: none;
+	        margin: 0;
+	    }
+
+	    input[type="number"] {
+	        -moz-appearance: textfield;
+	    }
+
 	</style>
 
 	<div class="container">
@@ -87,11 +98,36 @@
 		        <input type="password" id="password" name="password" placeholder="Password">
 		        <label for="confirm-password">Confirm Password:</label>
 		        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password">
-		        <button type="submit" onclick="lock()">Sign Up</button>
+		        <div id="error-message" style="display: none; color: red;"></div>
+		        <button id="signup-button" type="submit" onclick="lock()">Sign Up</button>
 		    </form>
 		    <p>Already have an account? <a href="/">Log In</a></p>
 		</div>
 	</div>
+
+	<script>
+		document.getElementById("mssv").addEventListener("input", function() {
+		    var value = this.value;
+		    if (value.length > 8) {
+		        this.value = value.slice(0, 8);
+		    }
+		});
+
+		document.getElementById("confirm-password").addEventListener("blur", function() {
+	        var pass = document.getElementById("password").value;
+	        var confirm = this.value;
+	        var signupButton = document.getElementById("signup-button");
+	        if (pass !== confirm) {
+	            document.getElementById("error-message").innerHTML = "Passwords do not match!!!";
+	            document.getElementById("error-message").style.display = "block";
+	            signupButton.disabled = true;
+	        } else {
+	            document.getElementById("error-message").style.display = "none";
+	            signupButton.disabled = false;
+	        }
+	    });
+
+	</script>
 
 </body>
 </html>
