@@ -231,6 +231,8 @@ func main() {
 	log.Println("Server is running on port", PORT)
 	log.Println("=====================SUCCESS=====================")
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("src/img"))))
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("src/css"))))
+	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("src/js"))))
 	http.HandleFunc("/", login)
 	http.HandleFunc("/signup", signup)
 	http.HandleFunc("/home", homepage)
